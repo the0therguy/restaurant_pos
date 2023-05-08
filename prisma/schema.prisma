@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int        @id @default(autoincrement())
+  uuid        String     @unique
+  email       String     @unique
+  username    String     @unique
+  password    String
+}
+enum Restaurant {
+  crystal_cup
+  crystal_lounge
+}
+
+model Product {
+  id         Int        @id @default(autoincrement())
+  uuid       String     @unique
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  title      String
+  price      Decimal
+  cost       Decimal
+  restaurant Restaurant    @default(crystal_cup)
+  cart_details CartDetails[]
+}
+
+model Cart {
+  id        Int     @id @default(autoincrement())
+  uuid      String     @unique
+  name      String
+  cost      Decimal
+  charged   Decimal
+  discount  Decimal
+  table_number Int
+  is_paid   Boolean     @default(false)
+  cart_details CartDetails[]
+}
+
+model CartDetails {
+  id Int   @id  @default(autoincrement())
+  uuid      String     @unique
+  name      String
+  cart      Cart   @relation(fields: [cartId], references: [id])
+  cartId    Int   @unique
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int   @unique
+  restaurant Restaurant    @default(crystal_cup)
+}
