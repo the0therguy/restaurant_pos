@@ -3,7 +3,7 @@ import {signIn, useSession} from "next-auth/react";
 import {useRouter} from "next/router";
 import { Button, Checkbox, Form, Input } from 'antd';
 
-const SignIn = () => {
+const Signin = () => {
     const {data: session, status} = useSession()
     const {push} = useRouter()
     const router = useRouter()
@@ -101,4 +101,4 @@ const SignIn = () => {
     )
 }
 
-export default SignIn
+export default Signin
