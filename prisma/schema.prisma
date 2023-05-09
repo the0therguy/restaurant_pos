@@ -24,7 +24,7 @@ model Product {
   uuid       String     @unique
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-  title      String
+  title      String     @unique
   price      Decimal
   cost       Decimal
   restaurant Restaurant    @default(crystal_cup)
