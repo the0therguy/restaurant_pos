@@ -23,12 +23,13 @@ export default async function handler(req, res) {
         res.status(200).json({data: product})
     } else if (req.method==='DELETE') {
         try {
-            await prisma.product.delete({
+            const product = await prisma.product.delete({
                 where: {
                     uuid: req.query.id
                 }
             })
-            res.status(204)
+            console.log(product)
+            return res.status(204).end()
         }
         catch (e) {
             res.status(400).json({message: "no content available"})

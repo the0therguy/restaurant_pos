@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
@@ -9,48 +9,66 @@ datasource db {
 }
 
 model User {
-  id          Int        @id @default(autoincrement())
-  uuid        String     @unique
-  email       String     @unique
-  username    String     @unique
-  password    String
+  id       Int    @id @default(autoincrement())
+  uuid     String @unique
+  email    String @unique
+  username String @unique
+  password String
 }
+
 enum Restaurant {
   crystal_cup
   crystal_lounge
 }
 
-model Product {
-  id         Int        @id @default(autoincrement())
-  uuid       String     @unique
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  title      String     @unique
-  price      Decimal
-  cost       Decimal
-  restaurant Restaurant    @default(crystal_cup)
-  cart_details CartDetails[]
+model Category {
+  id         Int       @id @default(autoincrement())
+  uuid       String    @unique
+  title      String    @unique
+  isDeleted Boolean
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  product    Product[]
 }
 
-model Cart {
-  id        Int     @id @default(autoincrement())
-  uuid      String     @unique
-  name      String
-  cost      Decimal
-  charged   Decimal
-  discount  Decimal
-  table_number Int
-  is_paid   Boolean     @default(false)
-  cart_details CartDetails[]
+model Product {
+  id           Int           @id @default(autoincrement())
+  uuid         String        @unique
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  title        String        @unique
+  price        Decimal
+  isDeleted   Boolean
+  category     Category      @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+  cartDetails CartDetails[]
 }
 
 model CartDetails {
-  id Int   @id  @default(autoincrement())
-  uuid      String     @unique
-  name      String
-  cart      Cart   @relation(fields: [cartId], references: [id])
-  cartId    Int   @unique
-  product   Product @relation(fields: [productId], references: [id])
-  productId Int   @unique
+  id         Int      @id @default(autoincrement())
+  uuid       String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  product    Product  @relation(fields: [productId], references: [id])
+  productId Int
+  quantity   Int
+  price      Decimal
+  discountedPrice Decimal
   restaurant Restaurant    @default(crystal_cup)
+  tableNumber  Int
+  isDeleted  Boolean
+  cart        Cart[]
+}
+
+model Cart {
+  id         Int      @id @default(autoincrement())
+  uuid       String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  tableNumber Int
+  isPaid      Boolean
+  totalPrice  Decimal
+  discount    Decimal
+  cartDetails CartDetails @relation(fields: [cartDetailsId], references: [id])
+  cartDetailsId      Int
 }
