@@ -9,10 +9,10 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  uuid     String @unique
-  email    String @unique
-  username String @unique
+  id       Int              @id @default(autoincrement())
+  uuid     String           @unique
+  email    String           @unique
+  username String           @unique
   password String
 }
 
@@ -37,7 +37,7 @@ model Product {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   title        String        @unique
-  price        Decimal
+  price        Decimal       @default(0.00)
   isDeleted    Boolean       @default(false)
   restaurant   Restaurant    @default(crystal_cup)
   category     Category      @relation(fields: [categoryId], references: [id])
@@ -46,31 +46,33 @@ model Product {
 }
 
 model CartDetails {
-  id         Int      @id @default(autoincrement())
-  uuid       String   @unique
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  product    Product  @relation(fields: [productId], references: [id])
-  productId Int
-  quantity   Int
-  price      Decimal
-  discountedPrice Decimal
-  restaurant Restaurant    @default(crystal_cup)
-  tableNumber  Int
-  isDeleted    Boolean       @default(false)
-  cart        Cart[]
+  id              Int           @id @default(autoincrement())
+  uuid            String        @unique
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  product         Product       @relation(fields: [productId], references: [id])
+  productId       Int
+  quantity        Int           @default(0)
+  productPrice    Decimal       @default(0.00)
+  price           Decimal       @default(0.00)
+  discountedPrice Decimal       @default(0.00)
+  restaurant      Restaurant    @default(crystal_cup)
+  tableNumber     Int
+  isDeleted       Boolean       @default(false)
+  isPaid          Boolean       @default(false)
+  cart            Cart[]
 }
 
 model Cart {
-  id         Int      @id @default(autoincrement())
-  uuid       String   @unique
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  tableNumber Int
-  isDeleted    Boolean       @default(false)
-  isPaid      Boolean        @default(false)
-  totalPrice  Decimal
-  discount    Decimal
-  cartDetails CartDetails @relation(fields: [cartDetailsId], references: [id])
+  id                 Int            @id @default(autoincrement())
+  uuid               String         @unique
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  tableNumber        Int
+  isDeleted          Boolean        @default(false)
+  isPaid             Boolean        @default(false)
+  totalPrice         Decimal        @default(0.00)
+  discount           Decimal        @default(0.00)
+  cartDetails        CartDetails    @relation(fields: [cartDetailsId], references: [id])
   cartDetailsId      Int
 }
