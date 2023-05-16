@@ -22,13 +22,13 @@ enum Restaurant {
 }
 
 model Category {
-  id         Int       @id @default(autoincrement())
-  uuid       String    @unique
-  title      String    @unique
-  isDeleted Boolean
+  id           Int           @id @default(autoincrement())
+  uuid         String        @unique
+  title        String        @unique
+  isDeleted    Boolean       @default(false)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
-  product    Product[]
+  product      Product[]
 }
 
 model Product {
@@ -38,7 +38,7 @@ model Product {
   updatedAt    DateTime      @updatedAt
   title        String        @unique
   price        Decimal
-  isDeleted   Boolean
+  isDeleted    Boolean       @default(false)
   category     Category      @relation(fields: [categoryId], references: [id])
   categoryId  Int
   cartDetails CartDetails[]
@@ -56,7 +56,7 @@ model CartDetails {
   discountedPrice Decimal
   restaurant Restaurant    @default(crystal_cup)
   tableNumber  Int
-  isDeleted  Boolean
+  isDeleted    Boolean       @default(false)
   cart        Cart[]
 }
 
@@ -66,7 +66,8 @@ model Cart {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   tableNumber Int
-  isPaid      Boolean
+  isDeleted    Boolean       @default(false)
+  isPaid      Boolean        @default(false)
   totalPrice  Decimal
   discount    Decimal
   cartDetails CartDetails @relation(fields: [cartDetailsId], references: [id])
