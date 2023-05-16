@@ -39,6 +39,7 @@ model Product {
   title        String        @unique
   price        Decimal
   isDeleted    Boolean       @default(false)
+  restaurant   Restaurant    @default(crystal_cup)
   category     Category      @relation(fields: [categoryId], references: [id])
   categoryId  Int
   cartDetails CartDetails[]

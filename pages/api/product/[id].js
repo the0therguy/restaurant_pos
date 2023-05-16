@@ -7,6 +7,17 @@ export default async function handler(req, res) {
         const product = await prisma.product.findUnique({
             where: {
                 uuid: req.query.id
+            },
+            select: {
+                uuid: true,
+                title: true,
+                price: true,
+                restaurant: true,
+                category: {
+                    select: {
+                        title: true
+                    }
+                }
             }
         })
         if (product) return res.status(200).json({data: product})
@@ -17,23 +28,38 @@ export default async function handler(req, res) {
             data: req.body,
             where: {
                 uuid: req.query.id
+            },
+            select: {
+                uuid: true,
+                title: true,
+                price: true,
+                restaurant: true,
+                category: {
+                    select: {
+                        title: true
+                    }
+                }
             }
         })
-        console.log(product)
         res.status(200).json({data: product})
-    } else if (req.method==='DELETE') {
-        try {
-            const product = await prisma.product.delete({
-                where: {
-                    uuid: req.query.id
-                }
-            })
-            console.log(product)
-            return res.status(204).end()
+    } else if (req.method === 'DELETE') {
+        const product = await prisma.product.findUnique({
+            where: {
+                uuid: req.query.id,
+            }
+        })
+        if (product.isDeleted) {
+            return res.status(204).json({message: 'No data found'})
         }
-        catch (e) {
-            res.status(400).json({message: "no content available"})
-        }
+        await prisma.product.update({
+            data: {
+                isDeleted: true
+            },
+            where: {
+                uuid: req.query.id
+            },
+        })
+        return res.status(200).json({message: 'product deleted'})
     } else {
         res?.status(500)?.json({message: "HTTP POST method not valid"})
     }

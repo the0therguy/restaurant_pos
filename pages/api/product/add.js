@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     if (req.method === 'POST') {
         if (!req.body) return res?.status(404)?.json({error: "Don't Have form data"})
 
-        const {title, cost, price, restaurant} = req.body
+        const {title, price, restaurant, category} = req.body
 
         const checkExisting = await prisma.product.findUnique({
             where: {
@@ -15,27 +15,29 @@ export default async function handler(req, res) {
             }
         })
         if (checkExisting) return res?.status(442)?.json({message: "Product already Exists !!"})
-
-
         try {
             const product = await prisma.product.create({
                 data: {
                     uuid: uuidv4(),
                     title: title,
-                    cost: cost,
                     price: price,
-                    restaurant: restaurant
+                    restaurant: restaurant,
+                    category: {
+                        connect: {
+                            uuid: category
+                        }
+                    }
                 }
             })
-            console.log(product)
-            return res.status(201).json({message: 'product created!'})
+            return res.status(201).json({message: 'product created!', product: product})
         } catch (e) {
             if (e.code === 'P2002') {
                 return res.status(400).json({
                     message: `There is a unique constraint violation, a new user cannot be created with this ${e.meta.target}`
                 })
             }
-            return res.status(400).json({message: 'something happened'})
+            console.log(e)
+            return res.status(400).json({message: e})
         }
 
     } else {
